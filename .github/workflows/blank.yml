@@ -19,7 +19,7 @@ env:
   CTX_ENVIRONMENT: 'staging'
 jobs:
   build:
-    if: ${{ GITHUB_EVENT_NAME == 'workflow_dispatch' && success() }}
+    if: ${{ github.event.name == 'workflow_dispatch' && success() }}
     env:
       CTX_ENVIRONMENT: 'production'
     runs-on: ubuntu-latest
