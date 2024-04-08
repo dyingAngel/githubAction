@@ -13,8 +13,8 @@ jobs:
     name: 'Set Deployment Environment'
     runs-on: ubuntu-latest
     env:
-      deploy: staging
-      deploy_tag: default
+      deploy: NONE
+      deploy_tag: NONE
     outputs:
       deploy_env: ${{ env.deploy }}
       deploy_tag_env: ${{ env.deploy_tag }}
