@@ -21,9 +21,9 @@ jobs:
     steps:
     - name: Determine Environment
       run: |
-          if [[ ${{ GITHUB_EVENT_NAME }} = "push" ]]; then
+          if [[ ${{ GITHUB.EVENT_NAME }} = "push" ]]; then
               echo "deploy=Staging" >> $GITHUB_ENV
-          elif [[ ${{ GITHUB_EVENT_NAME }} = "publish" ]]; then
+          elif [[ ${{ GITHUB.EVENT_NAME }} = "publish" ]]; then
               echo "deploy=Production" >> $GITHUB_ENV
           else
               echo "deploy=NONE" >> $GITHUB_ENV
@@ -40,4 +40,4 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
-          echo $GITHUB_EVENT_NAME - ${{ needs.setDeployEnv.outputs.deploy_env }}
+          echo $GITHUB.EVENT_NAME - ${{ needs.setDeployEnv.outputs.deploy_env }}
