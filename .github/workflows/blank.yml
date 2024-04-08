@@ -8,8 +8,6 @@ on:
   release:
     types: ["published"]
 
-env:
-  CTX_ENVIRONMENT: 'staging'
 jobs:
   setDeployEnv:
     name: 'Set Deployment Environment'
@@ -36,8 +34,8 @@ jobs:
     environment: 
         name: ${{ needs.setDeployEnv.outputs.deploy_env }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
-          echo $GITHUB.EVENT_NAME - ${{ needs.setDeployEnv.outputs.deploy_env }}
+          echo ${{ GITHUB.EVENT_NAME }} - ${{ needs.setDeployEnv.outputs.deploy_env }} - ${{ vars.VAR_NAME }}
