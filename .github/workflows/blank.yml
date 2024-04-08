@@ -21,7 +21,7 @@ jobs:
       run: |
           if [[ ${{ GITHUB.EVENT_NAME }} = "push" ]]; then
               echo "deploy=staging" >> $GITHUB_ENV
-          elif [[ ${{ GITHUB.EVENT_NAME }} = "publish" ]]; then
+          elif [[ ${{ GITHUB.EVENT_NAME }} = "release" ]]; then
               echo "deploy=production" >> $GITHUB_ENV
           else
               echo "deploy=NONE" >> $GITHUB_ENV
