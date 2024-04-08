@@ -5,28 +5,39 @@ name: CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  workflow_dispatch:
-    inputs:
-      gitCommitID:
-        description: Github (SHA) Commit ID
-        default: "please put your commit id"
-        required: true
+  release:
+    types: ["published"]
 
 env:
   CTX_ENVIRONMENT: 'staging'
 jobs:
-  build:
-    if: ${{ github.event.name == 'workflow_dispatch' && success() }}
+  setDeployEnv:
+    name: 'Set Deployment Environment'
+    runs-on: [self-hosted, linux]
     env:
-      CTX_ENVIRONMENT: 'production'
+      deploy: staging
+    outputs:
+      deploy_env: ${{ env.deploy }}
+    steps:
+    - name: Determine Environment
+      run: |
+          if [[ ${{ GITHUB_EVENT_NAME }} = "push" ]]; then
+              echo "deploy=Staging" >> $GITHUB_ENV
+          elif [[ ${{ GITHUB_EVENT_NAME }} = "publish" ]]; then
+              echo "deploy=Production" >> $GITHUB_ENV
+          else
+              echo "deploy=NONE" >> $GITHUB_ENV
+          fi
+          echo "Deploying to ${{ env.deploy }} from branch ${{ GITHUB.REF }}"
+
+  build:
+    needs: setDeployEnv
     runs-on: ubuntu-latest
-    environment: ${{env.CTX_ENVIRONMENT}}
+    environment: 
+        name: ${{ needs.setDeployEnv.outputs.deploy_env }}
     steps:
       - uses: actions/checkout@v3
-
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo "$GITHUB_EVENT_NAME - $CTX_ENVIRONMENT - ${{ vars.VAR_NAME }}"
+        run: |
+          echo $GITHUB_EVENT_NAME - ${{ needs.setDeployEnv.outputs.deploy_env }}
