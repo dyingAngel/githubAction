@@ -14,15 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     env:
       deploy: staging
+      deploy_tag: default
     outputs:
       deploy_env: ${{ env.deploy }}
+      deploy_tag_env: ${{ env.deploy_tag }}
     steps:
     - name: Determine Environment
       run: |
           if [[ ${{ GITHUB.EVENT_NAME }} = "push" ]]; then
               echo "deploy=staging" >> $GITHUB_ENV
+              echo "deploy_tag=${{ github.run_id }}-${{ github.run_attempt }}" >> $GITHUB_ENV
           elif [[ ${{ GITHUB.EVENT_NAME }} = "release" ]]; then
               echo "deploy=production" >> $GITHUB_ENV
+              echo "deploy_tag=${{ github.ref_name }}" >> $GITHUB_ENV
           else
               echo "deploy=NONE" >> $GITHUB_ENV
           fi
@@ -33,9 +37,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
         name: ${{ needs.setDeployEnv.outputs.deploy_env }}
+    env:
+      RELEASE_TAG: ${{ needs.setDeployEnv.outputs.deploy_tag }}
     steps:
       - uses: actions/checkout@v4
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: |
-          echo ${{ GITHUB.EVENT_NAME }} - ${{ needs.setDeployEnv.outputs.deploy_env }} - ${{ vars.VAR_NAME }}
+          echo ${{ GITHUB.EVENT_NAME }} - ${{ needs.setDeployEnv.outputs.deploy_env }} - ${{ vars.VAR_NAME }} - ${{ env.RELEASE_TAG }}
