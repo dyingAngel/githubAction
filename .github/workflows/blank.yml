@@ -30,7 +30,7 @@ jobs:
           else
               echo "deploy=NONE" >> $GITHUB_ENV
           fi
-          echo "Deploying to ${{ env.deploy }} from branch ${{ GITHUB.REF }}"
+          echo "Deploying to ${{ env.deploy }} from branch ${{ GITHUB.REF }} with tag ${{ env.deploy_tag }}"
 
   build:
     needs: setDeployEnv
@@ -38,7 +38,7 @@ jobs:
     environment: 
         name: ${{ needs.setDeployEnv.outputs.deploy_env }}
     env:
-      RELEASE_TAG: ${{ needs.setDeployEnv.outputs.deploy_tag }}
+      RELEASE_TAG: ${{ needs.setDeployEnv.outputs.deploy_tag_env }}
     steps:
       - uses: actions/checkout@v4
       # Runs a single command using the runners shell
