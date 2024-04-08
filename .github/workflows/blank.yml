@@ -30,6 +30,8 @@ jobs:
           else
               echo "deploy=NONE" >> $GITHUB_ENV
           fi
+    - name: Output Result
+      run: |
           echo "Deploying to ${{ env.deploy }} from branch ${{ GITHUB.REF }} with tag ${{ env.deploy_tag }}"
 
   build:
