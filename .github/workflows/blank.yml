@@ -13,7 +13,7 @@ env:
 jobs:
   setDeployEnv:
     name: 'Set Deployment Environment'
-    runs-on: [self-hosted, linux]
+    runs-on: ubuntu-latest
     env:
       deploy: staging
     outputs:
